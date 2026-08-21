@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Todo — Beautiful Tasks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="mesh"></div>
+  <div class="mesh2"></div>
+  
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="logo">
+        <div class="logo-mark">✓</div>
+        <span>tasks</span>
+      </div>
+      <div class="nav-right">
+        <span id="userBadge" class="user-badge hidden"></span>
+        <button id="logoutBtn" class="btn-ghost hidden" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <!-- Auth Section -->
+    <section id="authSection" class="auth-wrap">
+      <div class="hero">
+        <h1>Organize<br><span class="grad">beautifully.</span></h1>
+        <p>Fast, minimal todo app with secure auth. Your tasks, synced.</p>
+        <div class="hero-stats">
+          <div><strong>100%</strong><span>Private</span></div>
+          <div class="dot"></div>
+          <div><strong>∞</strong><span>Tasks</span></div>
+          <div class="dot"></div>
+          <div><strong>⚡</strong><span>Fast</span></div>
+        </div>
+      </div>
+
+      <div class="auth-card">
+        <div class="tabs">
+          <button class="tab active" id="tabSignin" onclick="switchTab('signin')">Sign in</button>
+          <button class="tab" id="tabSignup" onclick="switchTab('signup')">Sign up</button>
+        </div>
+
+        <form id="authForm" onsubmit="handleAuth(event)">
+          <div class="field">
+            <label>Username</label>
+            <input id="username" type="text" placeholder="johndoe" required autocomplete="username" />
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <input id="password" type="password" placeholder="••••••••" required autocomplete="current-password" />
+          </div>
+          <button type="submit" id="authBtn" class="btn-primary">
+            <span id="authBtnText">Sign in</span>
+            <span class="spinner hidden" id="authSpinner"></span>
+          </button>
+          <p id="authMsg" class="auth-msg"></p>
+        </form>
+        <p class="hint">Demo: any username + password works after signup</p>
+      </div>
+    </section>
+
+    <!-- App Section -->
+    <section id="appSection" class="app-wrap hidden">
+      <div class="app-header">
+        <div>
+          <h2 id="greet">Good morning</h2>
+          <p id="subgreet">Let's get things done.</p>
+        </div>
+        <div class="count-pill"><span id="todoCount">0</span> tasks</div>
+      </div>
+
+      <form class="add-card" onsubmit="addTodo(event)">
+        <div class="add-row">
+          <input id="titleIn" type="text" placeholder="What needs to be done?" required maxlength="80" />
+          <button type="submit" class="btn-add">Add</button>
+        </div>
+        <input id="descIn" type="text" placeholder="Description (optional)" maxlength="140" />
+      </form>
+
+      <div id="todoList" class="todo-grid"></div>
+      <div id="emptyState" class="empty hidden">
+        <div class="empty-icon">✦</div>
+        <h3>All clear</h3>
+        <p>No todos yet. Add one above to get started.</p>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

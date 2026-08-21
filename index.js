@@ -1,12 +1,22 @@
+require('dotenv').config();
 const express = require('express')
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose');
+const path = require('path');
 const { userModel, todoModel } = require('./models')
 const { authMiddleware } = require('./middleware')
 
 const app = express()
 
 app.use(express.json())
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, token');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS');
+  if (req.method === 'OPTIONS') return res.sendStatus(200);
+  next();
+});
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.post('/signup', async (req, res) => {
   const username = req.body.username
@@ -56,7 +66,7 @@ app.post('/signin', async (req, res) => {
     return
   }
 
-  const token = jwt.sign({ userId: userExists._id }, 'key')
+  const token = jwt.sign({ userId: userExists._id }, process.env.JWT_SECRET || 'key')
 
   res.json({
     token,
@@ -101,16 +111,16 @@ app.delete('/todo/:todoId', authMiddleware, async (req, res) => {
 
 app.get('/todos', authMiddleware, async (req, res) => {
   const userId = req.userId
-  const todo = await todoModel.find({ userId: userId })
-
-  res.json({
-    todo
-  })
+  const todos = await todoModel.find({ userId: userId }).sort({ _id: -1 })
+  res.json({ todos, todo: todos })
 })
 
 async function start() {
-  await mongoose.connect('mongodb+srv://parasrana1728_db_user:REDACTED@cluster0.vbx9loo.mongodb.net/todo');
+  const mongoUrl = process.env.MONGODB_URL;
+  if (!mongoUrl) throw new Error('MONGODB_URL missing in .env');
+  await mongoose.connect(mongoUrl);
   console.log("connected to db");
-  app.listen(3000, () => console.log("the server is running at: http://localhost:3000"));
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => console.log(`the server is running at: http://localhost:${port}`));
 }
 start();
