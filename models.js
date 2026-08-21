@@ -8,13 +8,13 @@ const userSchema = new mongoose.Schema({
 const todoSchema = new mongoose.Schema({
   title: String,
   desc: String,
-  userId: mongoose.Types.ObjectId
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "users" }
 })
 
-const userModel = mongoose.Model("users", userSchema)
-const todoModel = mongoose.Model("todos", todoSchema)
+const userModel = mongoose.model("users", userSchema)
+const todoModel = mongoose.model("todos", todoSchema)
 
 module.exports = {
   userModel,
-  todoModel
+  todoModel,
 }
